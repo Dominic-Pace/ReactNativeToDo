@@ -54,7 +54,7 @@ module.exports = React.createClass({
               onPress={()=>this.removeCompletedTask(index)}
               >
               <Text>
-                X
+                &#10005;
               </Text>
             </TouchableOpacity>
           </View>
