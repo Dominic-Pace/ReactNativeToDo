@@ -5,20 +5,39 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  AsyncStorage
 } from 'react-native';
 
 module.exports = React.createClass({
   getInitialState() {
     return({
-      tasks: [
-        'Write Business Plan',
-        'Create Pitch Decks',
-        'Develop Zazu Prototype'
-      ],
+      tasks: [],
       completedTasks: [],
       task: ''
     })
+  },
+
+  componentWillMount() {
+    AsyncStorage.getItem('tasks')
+      .then((response) => {
+        this.setState({tasks: JSON.parse(response)})
+      });
+
+    AsyncStorage.getItem('completedTasks')
+      .then((response) => {
+        this.setState({completedTasks: JSON.parse(response)})
+    });
+  },
+
+  componentDidUpdate() {
+    this.setStorage();
+  },
+
+  setStorage() {
+    AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+    AsyncStorage.setItem('completedTasks',
+      JSON.stringify(this.state.completedTasks));
   },
 
   renderList(tasks) {
@@ -52,7 +71,7 @@ module.exports = React.createClass({
               {task}
             </Text>
             <TouchableOpacity
-              onPress={()=>this.removeCompletedTask(index)}
+              onPress={()=>this.deleteTask(index)}
               >
               <Text>
                 &#10005;
@@ -62,6 +81,14 @@ module.exports = React.createClass({
         )
       })
     )
+  },
+
+  deleteTask(index) {
+    let completedTasks = this.state.completedTasks;
+    completedTasks = completedTasks.slice(0, index)
+        .concat(completedTasks.slice(index + 1));
+    this.setState({completedTasks});
+    this.setStorage();
   },
 
   completeTask(index) {
@@ -75,20 +102,13 @@ module.exports = React.createClass({
       tasks,
       completedTasks
     });
-  },
-
-  removeCompletedTask(index) {
-    let completedTasks = this.state.completedTasks;
-    completedTasks = completedTasks.slice(0, index)
-        .concat(completedTasks.slice(index + 1));
-
-    this.setState({completedTasks});
+    this.setStorage();
   },
 
   addTask() {
     let tasks = this.state.tasks.concat([this.state.task]);
     this.setState({tasks})
-
+    this.setStorage();
   },
 
   render() {
