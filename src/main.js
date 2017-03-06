@@ -74,8 +74,6 @@ module.exports = React.createClass({
       tasks,
       completedTasks
     });
-
-    console.log('completedTasks: ', this.state.completedTasks);
   },
 
   removeCompletedTask(index) {
