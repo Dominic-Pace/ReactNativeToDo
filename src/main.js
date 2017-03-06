@@ -4,7 +4,8 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
 
 module.exports = React.createClass({
@@ -105,9 +106,10 @@ module.exports = React.createClass({
           }}
           onEndEditing={()=>this.addTask()}
         />
-
-        {this.renderList(this.state.tasks)}
-        {this.renderCompleted(this.state.completedTasks)}
+        <ScrollView>
+          {this.renderList(this.state.tasks)}
+          {this.renderCompleted(this.state.completedTasks)}
+        </ScrollView>
       </View>
     )
   }
